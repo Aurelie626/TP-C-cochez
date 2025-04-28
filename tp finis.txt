@@ -1,0 +1,384 @@
+
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+// QUESTION 2
+
+void afficheparking(char tabParkings[30][9][100], const char* idParking)
+{
+	int found = 0;
+
+	for (int ligne = 0; ligne < 28; ligne++)
+	{
+		if (strcmp(idParking, tabParkings[ligne][0]) == 0)
+		{
+			for (int colonne = 0; colonne < 9; colonne++)
+			{
+				printf("%s ", tabParkings[ligne][colonne]);
+			}
+			found = 1;
+			break;
+		}
+	}
+
+	if (found != 1)
+	{
+		printf("l'id de parking est introuvable");
+	}
+
+	printf("\n");
+}
+
+
+//QUESTION 3
+
+void afficheparking2(char tabParkings[30][9][100])
+{
+	for (int ligne = 0; ligne < 28; ligne++)
+	{
+		for (int colonne = 0; colonne <= 9; colonne++)
+		{
+			printf("%s, ", tabParkings[ligne][colonne]);
+		}
+		printf("\n");
+	}
+}
+
+
+//QUESTION 4
+float sortieParking(const char* idParking)
+{
+	char plaque[20];
+
+	printf("La premiere heure de stationnement est offerte. \nLe prix est de 1,5 euro par tranche de 15 minutes.\n");
+
+	printf("Entrez la plaque d'immatriculation du vehicule : ");
+	scanf("%s", plaque);
+
+	int heure_arrivee, minute_arrivee; //declaration des heures
+	int heure_sortie, minute_sortie;
+
+	printf("Entrez l'heure d'arrivee :\n");// utilisateur entre les heures, minutes
+	printf("Heures : ");
+	scanf("%d", &heure_arrivee);
+	printf("Minutes : ");
+	scanf("%d", &minute_arrivee);
+
+	printf("Entrez l'heure de sortie :\n");
+	printf("Heures : ");
+	scanf("%d", &heure_sortie);
+	printf("Minutes : ");
+	scanf("%d", &minute_sortie);
+
+	// Conversion des heures en minutes
+	int arrivee_total = heure_arrivee * 60 + minute_arrivee;
+	int sortie_total = heure_sortie * 60 + minute_sortie;
+
+	// Calcul de la durC)e totale
+	int duree_minutes = sortie_total - arrivee_total;
+
+	//vC)rification
+	if (duree_minutes <= 0) {
+		printf("Erreur : L'heure de sortie doit etre superieure a l'heure d'arrivee.\n");
+		return -1;
+	}
+
+	float cout = 0;
+	if (duree_minutes > 60) {
+		int minutes_sup = duree_minutes - 60;      // Minutes au-delC  de la 1C(re heure
+		int tranches = (minutes_sup + 14) / 15;     // Arrondi C  la tranche supC)rieure
+		cout = tranches * 1.5;
+	}
+
+	//rC)capitilatif
+	printf("\n===== Sortie Parking =====\n");
+	printf("ID Parking : %s\n", idParking);
+	printf("Duree de stationnement : %d heures et %d minutes\n", duree_minutes / 60, duree_minutes % 60);
+	printf("Montant a payer : %.2f euros\n", cout);
+	printf("Plaque du vehicule : %s\n", plaque);
+	printf("==========================\n");
+
+	return cout; //utile pour une prochaine fonction
+}
+
+
+//QUESTION 5
+void suiviClient()
+{
+	char plaque[20];
+	char idParking[20];
+	int heure_arrivee, minute_arrivee;
+	int heure_sortie, minute_sortie;
+
+	// Saisie utilisateur
+	printf("Entrez l'ID du parking : ");
+	scanf("%s", idParking);
+
+	printf("Entrez la plaque du vehicule : ");
+	scanf("%s", plaque);
+
+	printf("Entrez l'heure d'arrivee :\n");// utilisateur entre les heures, minutes
+	printf("Heures : ");
+	scanf("%d", &heure_arrivee);
+	printf("Minutes : ");
+	scanf("%d", &minute_arrivee);
+
+	printf("Entrez l'heure de sortie :\n");
+	printf("Heures : ");
+	scanf("%d", &heure_sortie);
+	printf("Minutes : ");
+	scanf("%d", &minute_sortie);
+
+	// Appel de sortieParking pour calculer le coC;t
+	float cout = sortieParking(idParking);
+
+	if (cout < 0) {
+		printf("Erreur lors du calcul du cout.\n");
+		return;
+	}
+
+	// C	criture dans le fichier
+	FILE* fichier = fopen("suivi_clients.txt", "a");
+	if (fichier == NULL) {
+		printf("Erreur lors de l'ouverture du fichier.\n");
+		return;
+	}
+
+	fprintf(fichier, "ID Parking : %s\n", idParking);
+	fprintf(fichier, "Plaque : %s\n", plaque);
+	fprintf(fichier, "Montant paye : %.2f euros\n", cout);
+	fprintf(fichier, "Heure d'arrivC)e : %d, %d",heure_arrivee, minute_arrivee);
+	fprintf(fichier, "Heure d'arrivC)e : %d, %d",heure_sortie, minute_sortie);
+	fprintf(fichier, "-----------------------------\n");
+
+	fclose(fichier);
+	printf("Enregistrement effectue dans le fichier.\n\n");
+}
+
+
+//QUESTION 6
+void mettreAJourOccupation(char tabParkings[30][9][100], const char* idParking, int entree)
+{
+
+	if (entree != 1 && entree != 0)  // Verification de la validite de la valeur entree
+	{
+		printf("Erreur : La valeur entree pour l'entree/sortie doit entre 1 (entree) ou 0 (sortie).\n");
+		return;  // Quitte la fonction si l'entree n'est pas valide
+	}
+
+	int found = 0;
+
+	// Recherche du parking correspondant a l'id
+	for (int ligne = 0; ligne < 30; ligne++)
+	{
+		if (strcmp(idParking, tabParkings[ligne][0]) == 0)
+		{
+			found = 1; // Parking trouve
+			int places_disponibles = atoi(tabParkings[ligne][5]);  // Convertir en int la place disponible
+			int capacite_max = atoi(tabParkings[ligne][6]);  // Convertie en int la capacite maximale
+
+			// Mise a jour des places disponibles
+			if (entree == 1) // Un vehicule entre
+			{
+				if (places_disponibles < capacite_max)  // Si la capacite maximale n'est pas atteinte
+				{
+					places_disponibles++;
+					printf("Vehicule entree. Places disponibles mises C  jour : %d\n", places_disponibles);
+				}
+				else
+				{
+					printf("Parking complet, impossible d'ajouter le vehicule.\n");
+				}
+			}
+			else if (entree == 0) // Un vehicule sort
+			{
+				if (places_disponibles > 0)  // Verifier qu'il y a des places disponibles
+				{
+					places_disponibles--;
+					printf("Vehicule sorti. Places disponibles mises a jour : %d\n", places_disponibles);
+				}
+				else
+				{
+					printf("Aucune place occupee, rien a retirer.\n");
+				}
+			}
+
+			// Mise a jour dans le tableau
+			sprintf(tabParkings[ligne][5], "%d", places_disponibles);  // Convertir a nouveau en chaine
+			break;
+		}
+	}
+
+	if (found == 0) //si l'id n'est pas trouve
+	{
+		printf("L'id de parking est introuvable.\n");
+	}
+	printf("\n");
+}
+
+
+//QUESTION 7
+
+#define CODE_SECRET "admin123"  // Le code secret de l'administrateur
+
+// Fonction pour entrer dans le mode administrateur
+int modeAdministrateur() {
+	char code_saisi[10];
+
+	// Demander a l'utilisateur de saisir le code secret
+	printf("Entrez le code administrateur : ");
+	scanf("%s", code_saisi);
+
+	// Verifier si le code saisi correspond a celui de l'administrateur
+	if (strcmp(code_saisi, CODE_SECRET) == 0) {
+		printf("AccC(s administrateur autorisC).\n");
+		return 1;  // Retourner 1 si le code est correct
+	} else {
+		printf("Acces refuse. Code incorrect.\n");
+		return 0;  // Retourner 0 si le code est incorrect
+	}
+}
+
+
+//QUESTION 8
+void verifierPlacesDisponibles(char tabParkings[30][9][100], const char* idParking)
+{
+	int found = 0;
+
+	for (int i = 0; i < 30; i++)
+	{
+		if (strcmp(tabParkings[i][0], idParking) == 0)
+		{
+			found = 1;
+			int places_disponibles = atoi(tabParkings[i][5]);
+
+			if (places_disponibles == 0)
+			{
+				printf("Le parking %s est plein.\n", idParking);
+			}
+			else
+			{
+				printf("Le parking %s n'est pas plein. Il reste %d places.\n", idParking, places_disponibles);
+			}
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		printf("L'identifiant %s est introuvable dans la liste des parkings.\n", idParking);
+	}
+	printf("\n");
+}
+
+
+
+int main()
+{
+
+
+
+
+	char tabParkings[30][9][100] = {
+		{"Identifiant", "Nom", "Adresse", "Ville", "Etat", "Place-disponible", "Capacite-max", "date-de-mise-a-jour", "Panneaux-d'affichage"},
+		{"TCG0001", "Parking Hotel de Ville", "Rue de la Bienfaisance", "Tourcoing", "OUVERT", "185", "434", "2021-02-12 08:36:00+01:00", "185"},
+		{"TCG0002", "Parking Miss Cavell", "Avenue Allende", "Tourcoing", "ABONNES", "150", "273", "2021-02-12 08:36:00+01:00", "ABONNES"},
+		{"LIL0002", "Parking Plaza", "Rue Nationale", "Lille", "OUVERT", "140", "300", "2021-02-12 08:36:00+01:00", "140"},
+		{"TCG0003", "Parking St Christophe", "Rue des Anges", "Tourcoing", "OUVERT", "604", "757", "2021-02-12 08:36:00+01:00", "604"},
+		{"RBX0001", "Parking CHURCHILL", "Rue du president Vincent Auriol", "Roubaix", "OUVERT", "421", "487", "2021-02-12 08:36:00+01:00", "420"},
+		{"LIL0005", "Parking Gare Lille Flandres", "Rue de Tournai", "Lille", "OUVERT", "174", "376", "2021-02-12 08:36:00+01:00", "170"},
+		{"LIL0003", "Parking Les Tanneurs", "Rue du Molinel", "Lille", "OUVERT", "275", "520", "2021-02-12 08:36:00+01:00", "275"},
+		{"LIL0001", "Parking Republique", "Place de la Republique", "Lille", "OUVERT", "183", "203", "2021-02-12 08:36:00+01:00", "180"},
+		{"LIL0008", "Parking Gare Lille Europe", "Avenue de Cologne", "Lille", "OUVERT", "494", "450", "2021-02-12 08:36:00+01:00", "490"},
+		{"LIL0006", "Parking Euralille", "164 Avenue Willy Brandt", "Lille", "OUVERT", "2200", "2500", "2021-02-12 08:36:00+01:00", "2200"},
+		{"LIL0004", "Parking Grand Palais", "Boulevard des Citees Unies", "Lille", "OUVERT", "928", "1219", "2021-02-12 08:36:00+01:00", "925"},
+		{"LIL0013", "Parking Bethune-Lafayette", "6 rue de la Riviere", "Lille", "FERME", "0", "595", "2021-02-12 08:36:00+01:00", "FERME"},
+		{"LIL0007", "Parking Tours", "Boulevard de Turin", "Lille", "OUVERT", "122", "250", "2021-02-12 08:36:00+01:00", "120"},
+		{"LIL0009", "Parking Opera", "Avenue Carnot", "Lille", "OUVERT", "361", "433", "2021-02-12 08:36:00+01:00", "360"},
+		{"LIL0015", "Parking Liberte", "Facade de l'Esplanade", "Lille", "OUVERT", "388", "525", "2021-02-12 08:36:00+01:00", "385"},
+		{"VAQ0002", "Parking 4CANTONS", "Avenue Pointcare", "Villeneuve d'Ascq", "OUVERT", "1923", "2000", "2021-02-12 08:36:00+01:00", "1920"},
+		{"LIL0010", "Parking Vieux Lille", "Avenue du Peuple Belge", "Lille", "OUVERT", "169", "245", "2021-02-12 08:36:00+01:00", "165"},
+		{"RBX0003", "Parking Mac Arthur Glen (Gambetta)", "Rue Charles Watteeuw", "Roubaix", "OUVERT", "631", "878", "2021-02-12 08:36:00+01:00", "520"},
+		{"LIL0016", "Parking Petit Paradis", "Facade Esplanade", "Lille", "OUVERT", "208", "293", "2021-02-12 08:36:00+01:00", "205"},
+		{"LIL0011", "Parking Grand Place", "Place du General de Gaulle", "Lille", "OUVERT", "24", "342", "2021-02-12 08:36:00+01:00", "20"},
+		{"RBX0005", "Parking LA POSTE", "Rue de la Halle", "Roubaix", "OUVERT", "7", "75", "2021-02-12 08:36:00+01:00", "5"},
+		{"LIL0012", "Parking Rihour-Printemps", "Place Rihour", "Lille", "OUVERT", "291", "300", "2021-02-12 08:36:00+01:00", "290"},
+		{"LIL0014", "Parking Nouveau Siecle", "19 place Mendes France", "Lille", "OUVERT", "546", "940", "2021-02-12 08:36:00+01:00", "545"},
+		{"VAQ0003", "Parking LESPRES", "Boulevard de l'Ouest", "Villeneuve d'Ascq", ".", "0", "1000", "2021-02-12 08:36:00+01:00", "."},
+		{"VAQ0001", "Parking TRIOLO", "Avenue Paul Langevin", "Villeneuve d'Ascq", "FERME", "0", "1400", "2021-02-12 08:36:00+01:00", "FERME"},
+		{"RBX0006", "Parking GRAND RUE", "Avenue des Nations Unies", "Roubaix", "OUVERT", "230", "1300", "2021-02-12 08:36:00+01:00", "230"},
+		{"RBX0007", "Parking CENTRE", "Rue Neuve", "Roubaix", "COMPLET", "2", "85", "2021-02-12 08:36:00+01:00", "COMPLET"}
+	};
+
+
+
+	// question 2 : affiche les informations d'un parking choisie par l'utilisateur
+	char id[15];
+	printf("Entrez un id de parking : ");
+	scanf("%s", id);
+	afficheparking(tabParkings, id);
+	printf("\n");
+
+	// question 3 : afficher tous les parkings
+	afficheparking2(tabParkings);
+	printf("\n");
+
+
+	//QUESTION 4 et 5
+	char idParking[20];
+	printf("Entrez l'ID du parking : ");
+	scanf("%s", idParking);
+
+	float cout = sortieParking(idParking);
+
+	//QUESTION 5
+	suiviClient(cout);
+
+
+	//QUESTION 6
+	// Mise a jour de l'occupation
+	//entre un id
+	char id2[15];
+	printf("Entrez un id de parking : ");
+	scanf("%s", id2);
+
+	//definie une entree ou sortie
+	int entree;
+	printf("Entree (1) ou sortie (0) du vehicule ? ");
+	scanf("%d", &entree);
+	//appelle la fonction
+	mettreAJourOccupation(tabParkings, id2, entree);
+	printf("\n");
+
+	// Affichage des informations du parking apres sa mise a jour
+	afficheparking(tabParkings, id2);
+	printf("\n");
+
+
+	//QUESTION 7
+	//mode administrateur
+	int result = modeAdministrateur();  // Appeler la fonction pour verifier l'acces
+
+	if (result == 1) {
+		// Si l'acces est autorise
+		printf("Vous etes maintenant dans le mode administrateur.\n");
+	} else {
+		// Si l'acces est refuse, on peut afficher un message
+		printf("L'acces au mode administrateur est refuse.\n");
+	}
+
+
+	//QUESTION 8
+	// donne le nombre de places disponibles pour un parking choisie par l'utilisateur
+	char id3[15];
+	printf("Entrez l'identifiant du parking : ");
+	scanf("%s", id3);
+
+	verifierPlacesDisponibles(tabParkings, id3);
+
+
+
+	return 0;
+}
