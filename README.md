@@ -1,8 +1,8 @@
 # TP-C-cochez
 - Projet Parking Lillois
-Description du projet
+Description du projet :
 Ce projet a pour objectif de créer une application de gestion de parkings en langage C.
-L'application permet d'afficher les informations relatives aux parkings, de suivre l'occupation des places disponibles, de calculer le coût du stationnement en fonction de la durée, et d'assurer une gestion sécurisée via un mode administrateur.
+L'application permet d'afficher les informations relatives aux parkings, de suivre l'occupation des places disponibles, de calculer le coût du stationnement en fonction de la durée, et autre.
 
 Le projet a été développé dans le cadre du module Langage C de la première année de licence de Mathématiques.
 Le développement a été réalisé avec l'éditeur en ligne OnlineGDB, qui facilite la compilation et l'exécution du code en C.
@@ -23,7 +23,7 @@ Calcul automatique du coût de stationnement basé sur le temps passé.
 
 Mise à jour de l'occupation d'un parking (entrée ou sortie de véhicules).
 
-Mode administrateur protégé par un code secret utilisant #define.
+Mode administrateur.
 
 Indication de l'état d'un parking (plein ou nombre de places restantes).
 
@@ -36,12 +36,9 @@ La fonction de suivi client a été jugée répétitive, et des pistes d'amélio
 Idées d'amélioration
 Réussir l'importation dynamique des données depuis un fichier CSV.
 
-Ajouter une sauvegarde des mises à jour dans un fichier externe.
-
-Optimiser l'ergonomie de l'interface utilisateur (par exemple avec des menus ou des messages d'erreur plus précis).
+Ajouter une sauvegarde des mises à jour dans un fichier.
 
 Améliorer la modularité du code en limitant les répétitions.
 
-Auteur
 Aurélie Cochez
 L1 Mathématiques – Module Langage C
