@@ -131,7 +131,7 @@ void suiviClient()
 	printf("Minutes : ");
 	scanf("%d", &minute_sortie);
 
-	// Appel de sortieParking pour calculer le coC;t
+	// Appel de sortieParking pour calculer le cout
 	float cout = sortieParking(idParking);
 
 	if (cout < 0) {
@@ -235,7 +235,7 @@ int modeAdministrateur()
 	// Verifier si le code saisi correspond a celui de l'administrateur
 	if (strcmp(code_saisi, CODE_SECRET) == 0) 
         {
-		printf("AccC(s administrateur autorisC).\n");
+		printf("Accees administrateur autorise.\n");
 		return 1;  // Retourner 1 si le code est correct
 	} 
         else 
