@@ -277,7 +277,114 @@ void verifierPlacesDisponibles(char tabParkings[30][9][100], const char* idParki
 	printf("\n");
 }
 
+void menu(char tabParkings[30][9][100]) {
+    int choix;
+    char id[20];
+    int continuer = 1;
 
+    while (continuer) {
+        printf("\n===== MENU PRINCIPAL =====\n");
+        printf("1. Afficher les infos d’un parking par ID\n");
+        printf("2. Afficher tous les parkings\n");
+        printf("3. Calculer un coût de stationnement\n");
+        printf("4. Sortie client et enregistrement\n");
+        printf("5. Mettre à jour les places disponibles\n");
+        printf("6. Vérifier si un parking est plein\n");
+        printf("7. Mode administrateur\n");
+        printf("0. Quitter\n");
+        printf("===========================\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+
+        switch (choix) {
+            case 1:
+                // question 2 : affiche les informations d'un parking choisie par l'utilisateur
+	            char id[15];
+	            printf("Entrez un id de parking : ");
+	            scanf("%s", id);
+	            afficheparking(tabParkings, id);
+	            printf("\n");
+                break;
+
+            case 2:
+                // question 3 : afficher tous les parkings
+            	afficheparking2(tabParkings);
+	            printf("\n");
+                break;
+
+            case 3:
+                //QUESTION 4 et 5
+	            char idParking[20];
+	            printf("Entrez l'ID du parking : ");
+            	scanf("%s", idParking);
+
+            	float cout = sortieParking(idParking);
+                break;
+
+            case 4:
+                //QUESTION 5
+            	suiviClient(cout);
+                break;
+
+            case 5:
+                //QUESTION 6
+	            // Mise a jour de l'occupation
+	            //entre un id
+	            char id2[15];
+	            printf("Entrez un id de parking : ");
+	            scanf("%s", id2);
+
+        	    //definie une entree ou sortie
+	            int entree;
+	            printf("Entree (1) ou sortie (0) du vehicule ? ");
+	            scanf("%d", &entree);
+	            //appelle la fonction
+	            mettreAJourOccupation(tabParkings, id2, entree);
+	            printf("\n");
+
+	            // Affichage des informations du parking apres sa mise a jour
+	            afficheparking(tabParkings, id2);
+	            printf("\n");
+                break;
+
+            case 6:
+                //QUESTION 8
+        	   // donne le nombre de places disponibles pour un parking choisie par l'utilisateur
+	           char id3[15];
+	           printf("Entrez l'identifiant du parking : ");
+	           scanf("%s", id3);
+
+	            verifierPlacesDisponibles(tabParkings, id3);
+	            break;
+
+            case 7:
+            //QUESTION 7
+	        //mode administrateur
+	        int result = modeAdministrateur();  // Appeler la fonction pour verifier l'acces
+
+	        if (result == 1) 
+	        {
+		    // Si l'acces est autorise
+	    	printf("Vous etes maintenant dans le mode administrateur.\n");
+	        } 
+	        
+	        else 
+	            {
+		    // Si l'acces est refuse, on peut afficher un message
+	    	printf("L'acces au mode administrateur est refuse.\n");
+	            }
+	       break; 
+
+            case 0:
+                printf("Fermeture du programme.\n");
+                continuer = 0;
+                break;
+
+            default:
+                printf("Choix invalide, veuillez réessayer.\n");
+        }
+    }
+}
 
 int main()
 {
@@ -316,73 +423,7 @@ int main()
 		{"RBX0007", "Parking CENTRE", "Rue Neuve", "Roubaix", "COMPLET", "2", "85", "2021-02-12 08:36:00+01:00", "COMPLET"}
 	};
 
-
-
-	// question 2 : affiche les informations d'un parking choisie par l'utilisateur
-	char id[15];
-	printf("Entrez un id de parking : ");
-	scanf("%s", id);
-	afficheparking(tabParkings, id);
-	printf("\n");
-
-	// question 3 : afficher tous les parkings
-	afficheparking2(tabParkings);
-	printf("\n");
-
-
-	//QUESTION 4 et 5
-	char idParking[20];
-	printf("Entrez l'ID du parking : ");
-	scanf("%s", idParking);
-
-	float cout = sortieParking(idParking);
-
-	//QUESTION 5
-	suiviClient(cout);
-
-
-	//QUESTION 6
-	// Mise a jour de l'occupation
-	//entre un id
-	char id2[15];
-	printf("Entrez un id de parking : ");
-	scanf("%s", id2);
-
-	//definie une entree ou sortie
-	int entree;
-	printf("Entree (1) ou sortie (0) du vehicule ? ");
-	scanf("%d", &entree);
-	//appelle la fonction
-	mettreAJourOccupation(tabParkings, id2, entree);
-	printf("\n");
-
-	// Affichage des informations du parking apres sa mise a jour
-	afficheparking(tabParkings, id2);
-	printf("\n");
-
-
-	//QUESTION 7
-	//mode administrateur
-	int result = modeAdministrateur();  // Appeler la fonction pour verifier l'acces
-
-	if (result == 1) {
-		// Si l'acces est autorise
-		printf("Vous etes maintenant dans le mode administrateur.\n");
-	} else {
-		// Si l'acces est refuse, on peut afficher un message
-		printf("L'acces au mode administrateur est refuse.\n");
-	}
-
-
-	//QUESTION 8
-	// donne le nombre de places disponibles pour un parking choisie par l'utilisateur
-	char id3[15];
-	printf("Entrez l'identifiant du parking : ");
-	scanf("%s", id3);
-
-	verifierPlacesDisponibles(tabParkings, id3);
-
-
+    menu(tabParkings);
 
 	return 0;
 }
