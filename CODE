@@ -76,10 +76,10 @@ float sortieParking(const char* idParking)
 	int arrivee_total = heure_arrivee * 60 + minute_arrivee;
 	int sortie_total = heure_sortie * 60 + minute_sortie;
 
-	// Calcul de la durC)e totale
+	// Calcul de la duree totale
 	int duree_minutes = sortie_total - arrivee_total;
 
-	//vC)rification
+	//verification
 	if (duree_minutes <= 0) {
 		printf("Erreur : L'heure de sortie doit etre superieure a l'heure d'arrivee.\n");
 		return -1;
@@ -87,12 +87,12 @@ float sortieParking(const char* idParking)
 
 	float cout = 0;
 	if (duree_minutes > 60) {
-		int minutes_sup = duree_minutes - 60;      // Minutes au-delC  de la 1C(re heure
-		int tranches = (minutes_sup + 14) / 15;     // Arrondi C  la tranche supC)rieure
+		int minutes_sup = duree_minutes - 60;      // Minutes au-dela  de la premiere heure
+		int tranches = (minutes_sup + 14) / 15;     // Arrondi a  la tranche superieure
 		cout = tranches * 1.5;
 	}
 
-	//rC)capitilatif
+	//recapitilatif
 	printf("\n===== Sortie Parking =====\n");
 	printf("ID Parking : %s\n", idParking);
 	printf("Duree de stationnement : %d heures et %d minutes\n", duree_minutes / 60, duree_minutes % 60);
@@ -149,8 +149,8 @@ void suiviClient()
 	fprintf(fichier, "ID Parking : %s\n", idParking);
 	fprintf(fichier, "Plaque : %s\n", plaque);
 	fprintf(fichier, "Montant paye : %.2f euros\n", cout);
-	fprintf(fichier, "Heure d'arrivC)e : %d, %d",heure_arrivee, minute_arrivee);
-	fprintf(fichier, "Heure d'arrivC)e : %d, %d",heure_sortie, minute_sortie);
+	fprintf(fichier, "Heure d'arrivee : %d, %d",heure_arrivee, minute_arrivee);
+	fprintf(fichier, "Heure sortie : %d, %d",heure_sortie, minute_sortie);
 	fprintf(fichier, "-----------------------------\n");
 
 	fclose(fichier);
@@ -185,7 +185,7 @@ void mettreAJourOccupation(char tabParkings[30][9][100], const char* idParking, 
 				if (places_disponibles < capacite_max)  // Si la capacite maximale n'est pas atteinte
 				{
 					places_disponibles++;
-					printf("Vehicule entree. Places disponibles mises C  jour : %d\n", places_disponibles);
+					printf("Vehicule entree. Places disponibles mises a jour : %d\n", places_disponibles);
 				}
 				else
 				{
@@ -224,7 +224,8 @@ void mettreAJourOccupation(char tabParkings[30][9][100], const char* idParking, 
 #define CODE_SECRET "admin123"  // Le code secret de l'administrateur
 
 // Fonction pour entrer dans le mode administrateur
-int modeAdministrateur() {
+int modeAdministrateur() 
+{
 	char code_saisi[10];
 
 	// Demander a l'utilisateur de saisir le code secret
@@ -232,10 +233,13 @@ int modeAdministrateur() {
 	scanf("%s", code_saisi);
 
 	// Verifier si le code saisi correspond a celui de l'administrateur
-	if (strcmp(code_saisi, CODE_SECRET) == 0) {
+	if (strcmp(code_saisi, CODE_SECRET) == 0) 
+        {
 		printf("AccC(s administrateur autorisC).\n");
 		return 1;  // Retourner 1 si le code est correct
-	} else {
+	} 
+        else 
+        {
 		printf("Acces refuse. Code incorrect.\n");
 		return 0;  // Retourner 0 si le code est incorrect
 	}
